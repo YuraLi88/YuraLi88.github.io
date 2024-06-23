@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocabulary Test</title>
+    <style>
+           body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 600px;
+    text-align: center;
+}
+
+button {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    font-size: 1.2rem;
+    width: 100%;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+#options-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+#options-container button {
+    margin: 5px 0;
+    width: 48%;
+    background: #e0e0e0;
+    color: #000;
+}
+
+#results-container {
+    margin-top: 20px;
+    font-size: 1.2rem;
+}
+
+#wrong-words-list li {
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+#suggestion-container {
+    margin-top: 20px;
+    font-size: 1.2rem;
+}
+
+#next-button {
+    margin-top: 10px;
+    background: #28a745;
+}
+
+#next-button:hover {
+    background: #218838;
+}
+
+#progress-container {
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+}
+
+#progress-bar {
+    width: 100%;
+    background: #e0e0e0;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+#progress {
+    height: 20px;
+    background: #007bff;
+    width: 0;
+    transition: width 0.3s;
+}
+#back-button {
+    background: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    font-size: 1.2rem;
+    width: 100%;
+}
+
+#back-button:hover {
+    background: #c82333;
+}
+    </style>
+</head>
+<body>
+     <div class="container">
+        <h1>Vocabulary Test</h1>
+        <div id="progress-container">
+            <p id="trial-count"></p>
+            <div id="progress-bar">
+                <div id="progress"></div>
+            </div>
+        </div>
+        <div id="question-container">
+            <p id="definition"></p>
+            <div id="options-container"></div>
+        </div>
+        <div id="suggestion-container" style="display: none;">
+            <p id="suggestion"></p>
+            <button id="next-button">Next</button>
+        </div>
+        <button id="stop-button">Stop Game</button>
+        <div id="results-container" style="display: none;">
+            <h2>Results</h2>
+            <p id="score"></p>
+            <p>Wrong Words and Definitions:</p>
+            <ul id="wrong-words-list"></ul>
+        </div>
+        <button id="back-button">Back to Main Menu</button>
+    </div>
+    <script>
+        const wordlist = [
+            {word:"binge eating", definition:"fits of uncontrollable eating "},
+            {word:"premature death", definition:"when person dies before reaching an expected age (e.g. age 75) "},
+            {word:"comfort food", definition:"food that provides feeling of consolation or well-being, typically high on carbs or sugar "},
+            {word:"tone up", definition:"to become more healthy, to get in good shape "},
+            {word:"crash dieting", definition:"way of eating which helps to lose a large amount of weight in a short period of time "},
+            {word:"reduce lifespan", definition:"to decrease a number of years a person lives "},
+            {word:"sedentary lifestyle", definition:"the lifestyle that involves mainly sitting, without a lot of moving or physical activity "},
+            {word:"body shaming", definition:"humiliating someone by making critical comments about their body shape or size "},
+            {word:"pig out on gargantuan portions", definition:"to eat a large amount of food "},
+            {word:"shed the flab", definition:"to get rid of extra weight, fat that's sticking out "},
+            {word:"size-ist attitude", definition:"discrimination based on a person's size "},
+            {word:"complexion", definition:"the natural colour and condition of the skin on a person's face "},
+            {word:"ripped body", definition:"having strong muscles that you can see clearly "},
+            {word:"tall tale / fish story", definition:"a story with unbelievable or exaggerated elements, so strange and surprising that it seems very unlikely "},
+            {word:"irrefutable proof", definition:"impossible to prove wrong "},
+            {word:"hoax", definition:"when someone tells people something is true on purpose "},
+            {word:"urban myth / legend", definition:"an imaginary story about modern life which many people believe actually happened "},
+            {word:"fallacy", definition:"an idea which is false but many people think it's true "},
+            {word:"fake news", definition:"false stories that appear to be news spread on the Internet or in media "},
+            {word:"superstition", definition:"a belief that magic or luck can affect your life "},
+            {word:"to have a blast", definition:"to have a great time, to have fun "},
+            {word:"a nomadic lifestyle", definition:"a way of life that involves moving around, without stopping for too long in one place "},
+            {word:"on the road", definition:"to travel; connected with traveling "},
+            {word:"globetrotting vagabond", definition:"a person who travels around the world without having a home or a place to stay for long "},
+            {word:"off-the-beaten-track", definition:"far from main paths and tourist destinations "},
+            {word:"to get a little R&R", definition:"to have some rest and relaxation "},
+            {word:"to roam about", definition:"to move about or travel without a clear plan or destination "},
+            {word:"to jet off (to)", definition:"to go by an airplane to a destination "},
+            {word:"to take the plunge", definition:"to do something which is difficult or risky "},
+            {word:"secluded area", definition:"places not seen or visited by many people because it's hard to reach "},
+            {word:"to traverse the globe", definition:"to travel around the world; to cross the world "},
+            {word:"to tick the destination off your bucket list", definition:"to visit a place you've wanted to visit before you die "},
+            {word:"to rip off", definition:"to overcharge, to ask too much "},
+            {word:"(to have) exorbitant prices", definition:"to cost an arm and a leg, to be very expensive "},
+            {word:"a haunt", definition:"a place where one hangs out a lot "},
+            {word:"to put up with", definition:"to accept something unpleasant, tolerate "},
+            {word:"to get by", definition:"to make ends meet, to survive on little money "},
+            {word:"to come across", definition:"to bump into, to meet accidentally "},
+            {word:"dodgy areas", definition:"no-go areas, dangerous areas "},
+            {word:"slums", definition:"run-down neighborhood "},
+            {word:"congestion", definition:"traffic jam "},
+            {word:"vibrant", definition:"bustling, full of life and people "},
+            {word:"diverse", definition:"different, contrasting "},
+            {word:"picturesque", definition:"pretty, beautiful "},
+            {word:"crammed with", definition:"very full of people or things "},
+            {word:"to strike up a friendly chit-chat", definition:"to start an informal conversation on trivial matters "},
+            {word:"abandoned", definition:"left by people "},
+            {word:"emergency kit", definition:"a box or bag with the equipment, supplies, and medication needed to manage life-threatening conditions "},
+            {word:"to be in the open", definition:"to be outside, unprotected "},
+            {word:"shelter", definition:"a small building or covered place made to protect from bad weather or danger "},
+            {word:"to procure water", definition:"to obtain something which is difficult to get, like water "},
+            {word:"to collect dew", definition:"to collect small drops of water that form on the grass and leaves during the night "},
+            {word:"animal tracks", definition:"marks, such as footprints, left by animals that have passed "},
+            {word:"trail", definition:"a rough path across open country or through forests "},
+            {word:"edible", definition:"possible to eat, not poisonous "},
+            {word:"to keep an eye out for", definition:"to be watchful for "},
+            {word:"predator", definition:"an animal that kills and eats other animals "},
+            {word:"to flee", definition:"to escape, to run away "},
+            {word:"fallen debris", definition:"pieces from something that has been destroyed or pieces of unwanted materials that are spread around "},
+            {word:"elements", definition:"strong winds, heavy rain, or other kinds of bad weather"},
+                    ];
+
+let currentQuestionIndex = 0;
+let correctAnswers = 0;
+let wrongWords = [];
+let shuffledWordlist = [];
+
+document.addEventListener("DOMContentLoaded", () => {
+    shuffledWordlist = shuffleArray([...wordlist]);
+    displayQuestion();
+    document.getElementById("stop-button").addEventListener("click", endGame);
+    document.getElementById("next-button").addEventListener("click", nextQuestion);
+    updateProgress();
+    document.getElementById("back-button").addEventListener("click", goBack);
+});
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+function getRandomSample(array, size) {
+    let sample = [];
+    while (sample.length < size) {
+        const item = array[Math.floor(Math.random() * array.length)];
+        if (!sample.includes(item)) {
+            sample.push(item);
+        }
+    }
+    return sample;
+}
+
+function displayQuestion() {
+    if (currentQuestionIndex >= shuffledWordlist.length) {
+        endGame();
+        return;
+    }
+
+    const question = shuffledWordlist[currentQuestionIndex];
+    document.getElementById("definition").textContent = question.definition;
+
+    const optionsContainer = document.getElementById("options-container");
+    optionsContainer.innerHTML = "";
+
+    const options = getRandomSample(wordlist, 3); // Get 3 random words
+    if (!options.includes(question)) {
+        options.push(question); // Ensure the correct answer is included
+    }
+    shuffleArray(options); // Shuffle the options
+
+    options.forEach(option => {
+        const button = document.createElement("button");
+        button.textContent = option.word;
+        button.addEventListener("click", () => checkAnswer(option.word));
+        optionsContainer.appendChild(button);
+    });
+
+    updateProgress();
+}
+
+function checkAnswer(selectedWord) {
+    const question = shuffledWordlist[currentQuestionIndex];
+    if (selectedWord === question.word) {
+        correctAnswers++;
+        nextQuestion();
+    } else {
+        wrongWords.push(question);
+        document.getElementById("suggestion").textContent = `Incorrect! The correct answer is "${question.word}": ${question.definition}`;
+        document.getElementById("suggestion-container").style.display = "block";
+        document.getElementById("question-container").style.display = "none";
+    }
+}
+
+function nextQuestion() {
+    currentQuestionIndex++;
+    document.getElementById("suggestion-container").style.display = "none";
+    document.getElementById("question-container").style.display = "block";
+    displayQuestion();
+}
+
+function updateProgress() {
+    const totalQuestions = shuffledWordlist.length;
+    const currentQuestion = currentQuestionIndex + 1;
+    document.getElementById("trial-count").textContent = `${currentQuestion}/${totalQuestions}, ${totalQuestions - currentQuestion} remains`;
+
+    const progressPercentage = (currentQuestionIndex / totalQuestions) * 100;
+    document.getElementById("progress").style.width = `${progressPercentage}%`;
+}
+
+function endGame() {
+    document.getElementById("question-container").style.display = "none";
+    document.getElementById("stop-button").style.display = "none";
+    document.getElementById("suggestion-container").style.display = "none";
+    document.getElementById("results-container").style.display = "block";
+
+    const score = (correctAnswers / shuffledWordlist.length) * 100;
+    document.getElementById("score").textContent = `Score: ${score.toFixed(2)}%`;
+
+    const wrongWordsList = document.getElementById("wrong-words-list");
+    wrongWordsList.innerHTML = "";
+    wrongWords.forEach(entry => {
+        const li = document.createElement("li");
+        li.textContent = `${entry.word}: ${entry.definition}`;
+        wrongWordsList.appendChild(li);
+    });
+}
+function goBack() {
+        // Assuming the main menu page is named "index.html"
+        window.location.href = "index.html";
+    }
+
+    </script>
+</body>
+</html>

@@ -3,335 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vocabulary Test</title>
+    <title>Mobile Test Selection</title>
     <style>
-           body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    font-size: 1.2rem;
-}
-
-.container {
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 90%;
-    max-width: 600px;
-    text-align: center;
-}
-
-button {
-    background: #007bff;
-    color: #fff;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
-    font-size: 1.2rem;
-    width: 100%;
-}
-
-button:hover {
-    background: #0056b3;
-}
-
-#options-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    margin-top: 20px;
-}
-
-#options-container button {
-    margin: 5px 0;
-    width: 48%;
-    background: #e0e0e0;
-    color: #000;
-}
-
-#results-container {
-    margin-top: 20px;
-    font-size: 1.2rem;
-}
-
-#wrong-words-list li {
-    text-align: left;
-    margin-bottom: 10px;
-}
-
-#suggestion-container {
-    margin-top: 20px;
-    font-size: 1.2rem;
-}
-
-#next-button {
-    margin-top: 10px;
-    background: #28a745;
-}
-
-#next-button:hover {
-    background: #218838;
-}
-
-#progress-container {
-    margin-bottom: 20px;
-    font-size: 1.2rem;
-}
-
-#progress-bar {
-    width: 100%;
-    background: #e0e0e0;
-    border-radius: 5px;
-    overflow: hidden;
-    margin-top: 10px;
-}
-
-#progress {
-    height: 20px;
-    background: #007bff;
-    width: 0;
-    transition: width 0.3s;
-}
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            width: 100%;
+            max-width: 300px;
+            text-align: center;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+        }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .test-button {
+            padding: 1rem;
+            font-size: 1rem;
+            color: white;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .test-button:hover, .test-button:focus {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
-     <div class="container">
-        <h1>Vocabulary Test</h1>
-        <div id="progress-container">
-            <p id="trial-count"></p>
-            <div id="progress-bar">
-                <div id="progress"></div>
-            </div>
-        </div>
-        <div id="question-container">
-            <p id="definition"></p>
-            <div id="options-container"></div>
-        </div>
-        <div id="suggestion-container" style="display: none;">
-            <p id="suggestion"></p>
-            <button id="next-button">Next</button>
-        </div>
-        <button id="stop-button">Stop Game</button>
-        <div id="results-container" style="display: none;">
-            <h2>Results</h2>
-            <p id="score"></p>
-            <p>Wrong Words and Definitions:</p>
-            <ul id="wrong-words-list"></ul>
+    <div class="container">
+        <h1>Choose Your Mobile Test</h1>
+        <div class="button-container">
+            <button class="test-button" onclick="openTest(1)">Test Block 1</button>
+            <button class="test-button" onclick="openTest(2)">Test Block 2</button>
+            <button class="test-button" onclick="openTest(3)">Test Block 3</button>
         </div>
     </div>
+
     <script>
-        const wordlist = [
-    { word: "to erode", definition: "to be gradually destroyed (soil, rock, or land)" },
-    { word: "to corrode", definition: "to destroy or damage (metal, stone, or other materials) slowly by chemical action" },
-    { word: "to decompose", definition: "to decay or rot down due to chemical, physical, or biological processes (dead body or other organic matter)" },
-    { word: "to biodegrade", definition: "to be decomposed by bacteria or other living organisms" },
-    {word:"to emit", definition:"to produce or discharge (especially gas, fumes or radiation) "},
-{word:"to dispose of", definition:"to get rid of by throwing away (waste, toxic liquids) "},
-{word:"to scale down", definition:"to reduce the amount of something you do or use (for example, the use of coal) "},
-{word:"to phase out", definition:"to gradually stop using or doing something "},
-{word:"to eliminate", definition:"to completely remove or get rid of something (pollution) "},
-{word:"to preserve", definition:"to maintain in its original or existing state, protect from harm (environment) "},
-{word:"to conserve", definition:"to preserve from the wasteful overuse (resources, water, energy) "},
-{word:"dos and don'ts", definition:"rules of behavior "},
-{word:"ins and outs", definition:"the details or complicated facts of something "},
-{word:"tried and tested", definition:"proven to be effective or reliable "},
-{word:"trial and error", definition:"experimenting with various methods to find the most successful one "},
-{word:"up and running", definition:"functioning; in operation "},
-{word:"around and about", definition:"vague response to avoid saying where exactly you have been "},
-{word:"over and out", definition:"informal way to say 'good-bye' identifies that the person's fin- ished talking "},
-{word:"dead and buried", definition:"something finished or past that cannot happen again in the future "},
-{word:"safe and sound", definition:"out of danger and unharmed "},
-{word:"by and large", definition:"on the whole, in general "},
-{word:"wine and dine", definition:"to take someone out to dinner in a fancy restaurant "},
-{word:"back and forth", definition:"moving forward and backward or between two things, places, people etc. "},
-{word:"resilience", definition:"the ability to recover quickly from difficulties; toughness "},
-{word:"a preposterous idea", definition:"an absurd or ridiculous thought "},
-{word:"in hindsight", definition:"understanding the situation only after it happened "},
-{word:"to exceed expectations", definition:"to be bigger or better than someone thought of it "},
-{word:"to make a breakthrough", definition:"to make a development or an important achievement "},
-{word:"to stand out", definition:"to be easily noticeable, clearly better or more significant than others "},
-{word:"to persevere", definition:"to continue the activity even if there are no signs or chance of success "},
-{word:"a giant leap (for)", definition:"a big step in development "},
-{word:"to scrutinize the details", definition:"to examine and inspect thoroughly "},
-{word:"a visionary", definition:"a person with original ideas of what the future might be like "},
-{word:"to be persecuted for", definition:"treated with hostility because of their beliefs, religion etc. "},
-{word:"doomed to fail", definition:"certain or bound to fail "},
-{word:"an insidious risk", definition:"risk that causes slow but dangerous harm "},
-{word:"spacecraft", definition:"a vehicle used for traveling in space "},
-{word:"daunting prospect", definition:"frightening possibility or likelihood "},
-{word:"hazardous", definition:"risky, dangerous "},
-{word:"fatality", definition:"a death caused by accident, war, disaster etc. "},
-{word:"anticipated problems", definition:"expected difficulties "},
-{word:"hostile environment", definition:"unfriendly surroundings "},
-{word:"techie", definition:"a person who is an expert in technology, especially computing "},
-{word:"to pose a threat", definition:"to present a difficult or dangerous situation "},
-{word:"to settle", definition:"to go and live somewhere permanently "},
-{word:"cutting-edge", definition:"the newest and most modern technology "},
-{word:"be exposed to radiation", definition:"having no protection from, under the impact of radia- tion "},
-{word:"to raise one's suspicion", definition:"making one think that something's wrong "},
-{word:"surveillance apathy", definition:"not caring about and not being careful with sharing per- sonal information online or with anybody else "},
-{word:"CCTV camera", definition:"a closed-circuit television camera, used to transmit a signal and record what's going on 24/7 in public places "},
-{word:"to eavesdrop", definition:"to secretly listen to a conversation "},
-{word:"to stalk", definition:"to follow or persecute sb with unwanted and obsessive attention "},
-{word:"classified information", definition:"secret information "},
-{word:"identity theft", definition:"when someone's name and personal information are stolen and used by another person to obtain credits, loans, commit crimes etc. "},
-{word:"to track ", definition:"to search for and identify the person's location "},
-{word:"data mining", definition:"examining large databases in order to generate new information "},
-{word:"to tap / wiretap", definition:"to connect a device to a phone or hide it in a room so that conversations could be listened to secretly "},
-{word:"privacy breach", definition:"loss of / unauthorized access to / disclosure of personal infor- mation "},
-{word:"dodge the bullet", definition:"to have a narrow escape, to avoid disastrous, dangerous or harmful situation "},
-{word:"bury the hatchet", definition:"to make peace with someone "},
-{word:"get the axe", definition:"to be fired "},
-{word:"pull the trigger", definition:"to make a final decision or to commit to a certain course of action "},
-{word:"cross swords", definition:"to argue or fight "},
-{word:"drop the bombshell", definition:"to reveal something surprising or unexpected "},
-{word:"keep your powder dry", definition:"to be prepared to act with little or no advance notice "},
-{word:"lock, stock, and barrel", definition:"entirely, completely "},
-{word:"fight a losing battle", definition:"to try to do something that is doomed to fail "},
-{word:"be in the line of fire", definition:"to be likely to be criticized for something "},
-{word:"burn bridges", definition:"to do something that makes it impossible for you to return to the situation you were in before "},
-{word:"a long shot", definition:"something that has a very small chance of succeeding "},
-{word:"at gunpoint", definition:"under or as if under the threat of being shot "},
-{word:"bring a knife to a gunfight", definition:"to come poorly prepared or equipped for some task, goal, competition or confrontation "},
-{word:"morally ambiguous", definition:"morally doubtful or uncertain "},
-{word:"dubious decision", definition:"questionable, doubtful choice "},
-{word:"in a predicament", definition:"to have a dilemma, a difficult situation "},
-{word:"to feel perplexed", definition:"to be uncertain, puzzled "},
-{word:"to opt for the lesser of two evils", definition:"to choose a less unpleasant of two bad options "},
-{word:"to sit on the fence", definition:"to be unable or unwilling to make a decision, not to take any sides "},
-{word:"to go through with a decision", definition:"to carry out your decision, to do what you've decided to do "},
-{word:"to cross the line", definition:"to do what's morally unacceptable "},
-{word:"to assess the situation", definition:"to analyze the situation, thinking of pros and cons "},
-{word:"between a rock and a hard place", definition:"facing a choice between two equally un- pleasant options "},
-{word:"no-brainer", definition:"a decision which doesn't require a lot of thought since the best choice is obvious "},
-{word:"to toss a coin", definition:"to make a choice between two equally good / bad options, when you simply flip a coin "},
-{word:"copyright infringement", definition:"breaking the terms of intellectual property laws "},
-{word:"to pay royalties", definition:"to give money to authors, musicians, photographers etc. when their work is sold "},
-{word:"to combat piracy", definition:"to try to stop the spread and use of illegally copied software, books, movies etc. "},
-{word:"counterfeit goods", definition:"products made in imitation of something valuable to deceive "},
-{word:"to use a loophole", definition:"to use an ambiguity or inadequacy in laws or rules "},
-{word:"to sue the offender", definition:"to start a legal case against a person who broke the law or rules "},
-{word:"up for grabs", definition:"free of charge "},
-{word:"to give credit to", definition:"to formally praise someone, saying they have done something "},
-{word:"liable for monetary damage", definition:"legally responsible to pay compensation "},
-{word:"cease-and-desist (letter)", definition:"an order from a court or government saying stop whatever you're doing and don't do it again" }
-];
-
-let currentQuestionIndex = 0;
-let correctAnswers = 0;
-let wrongWords = [];
-let shuffledWordlist = [];
-
-document.addEventListener("DOMContentLoaded", () => {
-    shuffledWordlist = shuffleArray([...wordlist]);
-    displayQuestion();
-    document.getElementById("stop-button").addEventListener("click", endGame);
-    document.getElementById("next-button").addEventListener("click", nextQuestion);
-    updateProgress();
-});
-
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-}
-
-function getRandomSample(array, size) {
-    let sample = [];
-    while (sample.length < size) {
-        const item = array[Math.floor(Math.random() * array.length)];
-        if (!sample.includes(item)) {
-            sample.push(item);
+        function openTest(blockNumber) {
+            window.location.href = `test_mobile_block${blockNumber}.html`;
         }
-    }
-    return sample;
-}
-
-function displayQuestion() {
-    if (currentQuestionIndex >= shuffledWordlist.length) {
-        endGame();
-        return;
-    }
-
-    const question = shuffledWordlist[currentQuestionIndex];
-    document.getElementById("definition").textContent = question.definition;
-
-    const optionsContainer = document.getElementById("options-container");
-    optionsContainer.innerHTML = "";
-
-    const options = getRandomSample(wordlist, 3); // Get 3 random words
-    if (!options.includes(question)) {
-        options.push(question); // Ensure the correct answer is included
-    }
-    shuffleArray(options); // Shuffle the options
-
-    options.forEach(option => {
-        const button = document.createElement("button");
-        button.textContent = option.word;
-        button.addEventListener("click", () => checkAnswer(option.word));
-        optionsContainer.appendChild(button);
-    });
-
-    updateProgress();
-}
-
-function checkAnswer(selectedWord) {
-    const question = shuffledWordlist[currentQuestionIndex];
-    if (selectedWord === question.word) {
-        correctAnswers++;
-        nextQuestion();
-    } else {
-        wrongWords.push(question);
-        document.getElementById("suggestion").textContent = `Incorrect! The correct answer is "${question.word}": ${question.definition}`;
-        document.getElementById("suggestion-container").style.display = "block";
-        document.getElementById("question-container").style.display = "none";
-    }
-}
-
-function nextQuestion() {
-    currentQuestionIndex++;
-    document.getElementById("suggestion-container").style.display = "none";
-    document.getElementById("question-container").style.display = "block";
-    displayQuestion();
-}
-
-function updateProgress() {
-    const totalQuestions = shuffledWordlist.length;
-    const currentQuestion = currentQuestionIndex + 1;
-    document.getElementById("trial-count").textContent = `${currentQuestion}/${totalQuestions}, ${totalQuestions - currentQuestion} remains`;
-
-    const progressPercentage = (currentQuestionIndex / totalQuestions) * 100;
-    document.getElementById("progress").style.width = `${progressPercentage}%`;
-}
-
-function endGame() {
-    document.getElementById("question-container").style.display = "none";
-    document.getElementById("stop-button").style.display = "none";
-    document.getElementById("suggestion-container").style.display = "none";
-    document.getElementById("results-container").style.display = "block";
-
-    const score = (correctAnswers / shuffledWordlist.length) * 100;
-    document.getElementById("score").textContent = `Score: ${score.toFixed(2)}%`;
-
-    const wrongWordsList = document.getElementById("wrong-words-list");
-    wrongWordsList.innerHTML = "";
-    wrongWords.forEach(entry => {
-        const li = document.createElement("li");
-        li.textContent = `${entry.word}: ${entry.definition}`;
-        wrongWordsList.appendChild(li);
-    });
-}
-
-
     </script>
 </body>
 </html>

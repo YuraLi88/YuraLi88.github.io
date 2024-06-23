@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocabulary Test</title>
+    <style>
+           body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 600px;
+    text-align: center;
+}
+
+button {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    font-size: 1.2rem;
+    width: 100%;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+#options-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+#options-container button {
+    margin: 5px 0;
+    width: 48%;
+    background: #e0e0e0;
+    color: #000;
+}
+
+#results-container {
+    margin-top: 20px;
+    font-size: 1.2rem;
+}
+
+#wrong-words-list li {
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+#suggestion-container {
+    margin-top: 20px;
+    font-size: 1.2rem;
+}
+
+#next-button {
+    margin-top: 10px;
+    background: #28a745;
+}
+
+#next-button:hover {
+    background: #218838;
+}
+
+#progress-container {
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+}
+
+#progress-bar {
+    width: 100%;
+    background: #e0e0e0;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+#progress {
+    height: 20px;
+    background: #007bff;
+    width: 0;
+    transition: width 0.3s;
+}
+#back-button {
+    background: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    font-size: 1.2rem;
+    width: 100%;
+}
+
+#back-button:hover {
+    background: #c82333;
+}
+    </style>
+    </style>
+</head>
+<body>
+     <div class="container">
+        <h1>Vocabulary Test</h1>
+        <div id="progress-container">
+            <p id="trial-count"></p>
+            <div id="progress-bar">
+                <div id="progress"></div>
+            </div>
+        </div>
+        <div id="question-container">
+            <p id="definition"></p>
+            <div id="options-container"></div>
+        </div>
+        <div id="suggestion-container" style="display: none;">
+            <p id="suggestion"></p>
+            <button id="next-button">Next</button>
+        </div>
+        <button id="stop-button">Stop Game</button>
+        <div id="results-container" style="display: none;">
+            <h2>Results</h2>
+            <p id="score"></p>
+            <p>Wrong Words and Definitions:</p>
+            <ul id="wrong-words-list"></ul>
+
+        </div>
+        <button id="back-button">Back to Main Menu</button>
+    </div>
+    <script>
+        const wordlist = [
+        {word:"to hang out", definition:"to spend a lot of time in a place or with someone "},
+        {word:"a significant other", definition:"someone's boyfriend, girlfriend, husband, wife or lover "},
+        {word:"to stand sb up", definition:"to intentionally fail to meet someone when you said you would (especially someone you were starting to have a romantic relationship with)"},
+        {word:"to have a crush on sb", definition:"to be secretly attracted to a person (romantically) "},
+        {word:"to hit it off", definition:"to get along well with someone from the first moment you meet them "},
+        {word:"to lead sb on", definition:"to persuade someone to believe something that is untrue, trick, cheat "},
+        {word:"to make a move on sb", definition:"to try to start a romantic or sexual relationship with someone "},
+        {word:"to split up with sb", definition:"to stop being in a romantic relationship with sb, break up "},
+        {word:"a keeper", definition:"someone with good qualities, who you can have a long relationship with "},
+        {word:"a hook-up", definition:"a meeting for sex "},
+        {word:"DM / to DM", definition:"direct message / to send someone a private message "},
+        {word:"to dump sb", definition:"to suddenly end a romantic relationship you have been having with someone "},
+        {word:"a catch", definition:"a person who is attractive, interesting, or desirable as a partner "},
+        {word:"a one-night stand", definition:"a sexual relationship that lasts for only one night, or a person who you have had this type of relationship with "},
+        {word:"adulting", definition:"behaving in a manner of responsible adult, especially completing everyday tasks "},
+        {word:"to be in dire straits", definition:"to be in a problematic situation which is hard to fix "},
+        {word:"to seek challenges", definition:"to look for a difficult task that requires great efforts and determination "},
+        {word:"a fad", definition:"something that people are interested in for only a short period of time "},
+        {word:"to make a contribution (to)", definition:"to do something that helps you achieve a goal or make it successful "},
+        {word:"entitled", definition:"believing oneself to be special and deserve special treatment without the necessity to work for it "},
+        {word:"to cut sb some slack", definition:"to be less strict with someone "},
+        {word:"to pursue", definition:"to continue doing an activity or trying to achieve something over a long period of time "},
+        {word:"to make a commitment (to)", definition:"to make a promise to do something or to behave in a particular way, especially when starting a family or a job "},
+        {word:"to cram smth with smth", definition:"to push or force somebody / something into a small space "},
+        {word:"coddled", definition:"treated with too much care and attention, overprotected "},
+        {word:"a can-do attitude", definition:"treating a problem with confidence and willingness to solve it "},
+        {word:"to be in / out", definition:"to be (un)fashionable or (un)popular "},
+        {word:"'it' thing", definition:"something popular and fashionable "},
+        {word:"to fall for the hype", definition:"to believe that something people talk about is really cool / popular "},
+        {word:"a passing trend", definition:"something that is popular for a short period of time "},
+        {word:"sought-after", definition:"generally desired; much in demand "},
+        {word:"to take off", definition:"to become popular very fast "},
+        {word:"to revive a trend", definition:"to bring back to life something that used to be fashionable in the past "},
+        {word:"brand new", definition:"completely new "},
+        {word:"the latest thing", definition:"very new and fashionable "},
+        {word:"to endorse a craze", definition:"when famous people promote some trend "},
+        {word:"top-notch", definition:"excellent, of the highest quality "},
+        {word:"a killer something", definition:"strikingly impressive or effective "},
+        {word:"to lose appeal", definition:"to lose popularity, not be liked any more "},
+        {word:"to anticipate", definition:"to expect, predict "},
+        {word:"to endorse", definition:"to publicly show one's support and approve of some product "},
+        {word:"to purchase sth just for kicks", definition:"to buy sth for fun "},
+        {word:"to appeal to", definition:"to interest or attract sb "},
+        {word:"enticing", definition:"attractive or tempting "},
+        {word:"sampling", definition:"trying out before purchasing "},
+        {word:"by word of mouth", definition:"people telling each other and not through newspapers, advertisements, etc."}, 
+        {word:"to hit the target audience", definition:"to realize what kind of people the goods should be aimed at "},
+        {word:"to woo customers", definition:"to get the customers interested "},
+        {word:"susceptible to impulse buying", definition:"inclined to buy something unexpectedly "},
+        {word:"to emphasize the perks", definition:"to show, highlight the benefits "},
+        {word:"to launch (a new product)", definition:"to start releasing and selling a product "},
+        {word:"a profound impact (on)", definition:"a very big influence "},
+        {word:"to follow in someone's footsteps", definition:"to do the same thing as another person did before, usually parents or mentors "},
+        {word:"to empower", definition:"to make someone stronger and more confident, especially in controlling their life and claiming their rights "},
+        {word:"to idolize, to worship", definition:"to love and admire greatly "},
+        {word:"to advocate for, to campaign for, to promote", definition:"to publicly work to support something or achieve a particular goal "},
+        {word:"to look up to, to take one's hat off to", definition:"to respect someone "},
+        {word:"to show appreciation", definition:"to show gratitude and be thankful "},
+        {word:"a change agent", definition:"a person who initiates social or political change "},
+        {word:"adulation", definition:"excessive admiration or praise "},
+        {word:"to have the courage to", definition:"to be brave enough to do something "},
+        {word:"to make one's palms sweat", definition:"to make one feel scared or nervous "},
+        {word:"to harness one's fear", definition:"to control one's fear "},
+        {word:"to lure", definition:"to attract "},
+        {word:"to be hooked on sth", definition:"to be addicted to sth "},
+        {word:"to assess potential hazards", definition:"to evaluate possible dangers "},
+        {word:"a daredevil", definition:"a reckless person who enjoys doing dangerous things "},
+        {word:"to play with fire", definition:"to take dangerous risks "},
+        {word:"bold", definition:"courageous, brave "},
+        {word:"to perform stunts", definition:"to do a daring and spectacular action (often in movies) "},
+        {word:"a gamble", definition:"a risk "},
+        {word:"to be scared stiff", definition:"to feel really afraid, as if you can't move "},
+        {word:"to handle the tension", definition:"to manage mental or emotional pressure "},
+        {word:"a knack for creativity", definition:"skills, special talent for something "},
+        {word:"idea-sparking mindset", definition:"a creative way of thinking "},
+        {word:"to improve a creative workflow", definition:"to improve the way creative work is organized "},
+        {word:"to do brainstorming", definition:"to come up with many new ideas in a group "},
+        {word:"to buzz with ideas", definition:"to have a lot of ideas "},
+        {word:"to feel stuck", definition:"not to be able to come up with ideas "},
+        {word:"to immerse oneself in", definition:"to be completely involved into something "},
+        {word:"to embrace", definition:"to accept something willingly "},
+        {word:"revelation", definition:"an eye-opening idea / experience "},
+        {word:"to fade away", definition:"to become less clear, to disappear "},
+        {word:"random musing", definition:"unorganized or chaotic contemplation, deep thoughts "},
+        {word:"bizarre", definition:"unconventional, freakish, odd "},
+        {word:"appalling", definition:"gross, hideous, repulsive "},
+        {word:"breathtaking", definition:"mind-blowing, awe-inspiring, magnificent "},
+        {word:"dazzling", definition:"brilliant, stunning, ravishing "},
+        {word:"grotesque", definition:"ridiculous, surrealistic, outlandish "},
+        {word:"marvelous", definition:"fabulous, astonishing, remarkable "},
+        {word:"mesmerizing", definition:"fascinating, charming, captivating "},
+        {word:"tranquil", definition:"serene, peaceful, calm "},
+        {word:"thought-provoking", definition:"provocative, intriguing, controversial "},
+        {word:"vibrant", definition:"vivid, energetic, bright"}];
+
+let currentQuestionIndex = 0;
+let correctAnswers = 0;
+let wrongWords = [];
+let shuffledWordlist = [];
+
+document.addEventListener("DOMContentLoaded", () => {
+    shuffledWordlist = shuffleArray([...wordlist]);
+    displayQuestion();
+    document.getElementById("stop-button").addEventListener("click", endGame);
+    document.getElementById("next-button").addEventListener("click", nextQuestion);
+    updateProgress();
+    document.getElementById("back-button").addEventListener("click", goBack);
+});
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+function getRandomSample(array, size) {
+    let sample = [];
+    while (sample.length < size) {
+        const item = array[Math.floor(Math.random() * array.length)];
+        if (!sample.includes(item)) {
+            sample.push(item);
+        }
+    }
+    return sample;
+}
+
+function displayQuestion() {
+    if (currentQuestionIndex >= shuffledWordlist.length) {
+        endGame();
+        return;
+    }
+
+    const question = shuffledWordlist[currentQuestionIndex];
+    document.getElementById("definition").textContent = question.definition;
+
+    const optionsContainer = document.getElementById("options-container");
+    optionsContainer.innerHTML = "";
+
+    const options = getRandomSample(wordlist, 3); // Get 3 random words
+    if (!options.includes(question)) {
+        options.push(question); // Ensure the correct answer is included
+    }
+    shuffleArray(options); // Shuffle the options
+
+    options.forEach(option => {
+        const button = document.createElement("button");
+        button.textContent = option.word;
+        button.addEventListener("click", () => checkAnswer(option.word));
+        optionsContainer.appendChild(button);
+    });
+
+    updateProgress();
+}
+
+function checkAnswer(selectedWord) {
+    const question = shuffledWordlist[currentQuestionIndex];
+    if (selectedWord === question.word) {
+        correctAnswers++;
+        nextQuestion();
+    } else {
+        wrongWords.push(question);
+        document.getElementById("suggestion").textContent = `Incorrect! The correct answer is "${question.word}": ${question.definition}`;
+        document.getElementById("suggestion-container").style.display = "block";
+        document.getElementById("question-container").style.display = "none";
+    }
+}
+
+function nextQuestion() {
+    currentQuestionIndex++;
+    document.getElementById("suggestion-container").style.display = "none";
+    document.getElementById("question-container").style.display = "block";
+    displayQuestion();
+}
+
+function updateProgress() {
+    const totalQuestions = shuffledWordlist.length;
+    const currentQuestion = currentQuestionIndex + 1;
+    document.getElementById("trial-count").textContent = `${currentQuestion}/${totalQuestions}, ${totalQuestions - currentQuestion} remains`;
+
+    const progressPercentage = (currentQuestionIndex / totalQuestions) * 100;
+    document.getElementById("progress").style.width = `${progressPercentage}%`;
+}
+
+function endGame() {
+    document.getElementById("question-container").style.display = "none";
+    document.getElementById("stop-button").style.display = "none";
+    document.getElementById("suggestion-container").style.display = "none";
+    document.getElementById("results-container").style.display = "block";
+
+    const score = (correctAnswers / shuffledWordlist.length) * 100;
+    document.getElementById("score").textContent = `Score: ${score.toFixed(2)}%`;
+
+    const wrongWordsList = document.getElementById("wrong-words-list");
+    wrongWordsList.innerHTML = "";
+    wrongWords.forEach(entry => {
+        const li = document.createElement("li");
+        li.textContent = `${entry.word}: ${entry.definition}`;
+        wrongWordsList.appendChild(li);
+    });
+}
+    function goBack() {
+        // Assuming the main menu page is named "index.html"
+        window.location.href = "index.html";
+    }
+
+    </script>
+</body>
+</html>
